@@ -54,7 +54,10 @@ export default function Login() {
 						onChange={e => setEmail(e.target.value)}
 					/>
 					<Form.Text className="text-muted">
-						We'll never share your email with anyone else.
+						Demo login:{" "}
+						<b>
+							<i>demo | pw123</i>
+						</b>
 					</Form.Text>
 				</Form.Group>
 
@@ -72,9 +75,9 @@ export default function Login() {
 						</span>
 					</Form.Text>
 				</Form.Group>
-				<Form.Group className="mb-4" controlId="formBasicCheckbox">
-					{/* <Form.Check type="checkbox" label="Check me out" /> */}
-				</Form.Group>
+				<Form.Group
+					className="mb-4"
+					controlId="formBasicCheckbox"></Form.Group>
 				<Button variant="primary" type="submit">
 					Submit
 				</Button>

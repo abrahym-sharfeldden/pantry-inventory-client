@@ -58,12 +58,7 @@ export default function Header() {
 
 	const render = () => {
 		return (
-			<Navbar
-				bg="dark"
-				variant="dark"
-				expand="lg"
-				// style={{ height: "10vh", maxHeight: 50, minHeight: 50 }}
-			>
+			<Navbar bg="dark" variant="dark" expand="lg">
 				<Container className="header-container-width" fluid="md">
 					<Navbar.Brand as={Link} to="/">
 						Pantry Inventory

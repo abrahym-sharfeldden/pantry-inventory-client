@@ -2,8 +2,23 @@
 
 import { useState, useEffect, useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { Container, Table, Badge, Form } from "react-bootstrap";
-import { Trash, PencilSquare } from "react-bootstrap-icons";
+import {
+	Container,
+	Table,
+	Badge,
+	Form,
+	Modal,
+	Button,
+	Row,
+	Col,
+} from "react-bootstrap";
+import {
+	PlusCircleFill,
+	Plus,
+	Dash,
+	Trash,
+	PencilSquare,
+} from "react-bootstrap-icons";
 import UserProvider from "../hooks/UserProvider";
 import axios from "axios";
 
@@ -11,10 +26,13 @@ import axios from "axios";
 // import data from './MOCK_DATA.json';
 
 export default function Inventory() {
-	const userData = useContext(UserProvider.context);
-	const { user } = userData.user || {};
+	const { user } = useContext(UserProvider.context).user || {};
 	const [searchTerm, setSearchTerm] = useState("");
 	const [inventoryItems, setInventoryItems] = useState([]);
+	const [show, setShow] = useState(false);
+
+	const handleShowModal = () => setShow(true);
+	const handleCloseModal = () => setShow(false);
 
 	useEffect(() => {
 		if (!user) return;
@@ -39,15 +57,10 @@ export default function Inventory() {
 	};
 
 	const displayInventory = () => {
-		const obj = {
-			inventory: { name: "yes", quantity: 5, unit: "cups" },
-			status: "full",
-		};
-
 		if (!inventoryItems)
 			return (
 				<tr>
-					<td colSpan="12">No inventory items</td>
+					<td colSpan="11">No inventory items</td>
 				</tr>
 			);
 
@@ -62,6 +75,7 @@ export default function Inventory() {
 					key={key}
 					inventory={inventory.inventory}
 					status={inventory.status}
+					inventoryUpdater={setInventory}
 				/>
 			));
 	};
@@ -69,31 +83,39 @@ export default function Inventory() {
 	const showInventoryTable = () => {
 		return (
 			<Container fluid="lg" style={{ marginTop: "5rem" }}>
-				<input
-					type="text"
-					placeholder="Search.."
-					onChange={e => setSearchTerm(e.target.value)}
-				/>
-				<Table className="align-middle" borderless hover>
-					<thead className="text-muted">
+				<Container
+					className="d-flex justify-content-between align-items-center"
+					style={{ paddingInline: 0, height: "50px" }}>
+					<input
+						type="text"
+						placeholder="Search.."
+						onChange={e => setSearchTerm(e.target.value)}
+					/>
+					<PlusCircleFill
+						size={36}
+						onClick={() => handleShowModal(true)}
+					/>
+				</Container>
+				<Table size="lg" className="align-middle" borderless hover>
+					<thead
+						className="text-muted"
+						style={{ borderTop: "10px solid var(--bs-body-bg)" }}>
 						<tr>
-							<th style={{ maxWidth: "350px", width: "30%" }}>
-								Name
-							</th>
-							<th style={{ maxWidth: "200px", width: "20%" }}>
-								Status
-							</th>
-							<th style={{ maxWidth: "150px", width: "10%" }}>
-								Amount
-							</th>
-							<th style={{ maxWidth: "150px", width: "10%" }}>
-								Units
-							</th>
-							<th style={{ width: "20%" }}></th>
+							<th>Name</th>
+							<th>Status</th>
+							<th>Amount</th>
+							<th>Units</th>
+							<th></th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>{displayInventory()}</tbody>
 				</Table>
+
+				<ShowAddModal
+					show={show}
+					onHide={() => handleCloseModal(false)}
+				/>
 			</Container>
 		);
 	};
@@ -108,67 +130,156 @@ export default function Inventory() {
 	return render();
 }
 
-function ShowRows({ inventory, status }) {
-	const { name, quantity, unit } = inventory;
-	const [edit, setEdit] = useState(false);
+function ShowRows({ inventory, status, inventoryUpdater }) {
+	const { id, name, quantity, unit } = inventory;
 	const badgeBg = status.toLowerCase() === "error" ? "danger" : "success";
+
+	const handleDelete = id => {
+		axios
+			.delete(`http://192.168.1.19:3001/inventory/${id}`, {
+				withCredentials: true,
+			})
+			.then(response => {
+				console.log(response);
+				inventoryUpdater(previousState =>
+					previousState.filter(
+						element => !(element.inventory.id === id)
+					)
+				);
+			})
+			.catch(err => console.log(err));
+	};
 
 	// Refactor this code and styling of the edit
 	return (
 		<tr
 			style={{
-				border: "10px solid var(--bs-body-bg)",
+				borderBlock: "10px solid var(--bs-body-bg)",
 			}}>
+			<td>{name}</td>
 			<td>
-				{!edit ? (
-					name
-				) : (
-					<Form.Control type="text" defaultValue={name} />
-				)}
+				<Badge bg={badgeBg}>{status}</Badge>
 			</td>
-			<td style={{ padding: "1rem" }}>
-				{!edit ? (
-					<Badge bg={badgeBg}>{status}</Badge>
-				) : (
-					<Form>
-						<Form.Check
-							inline
-							label={<Badge bg="success">Present</Badge>}
-							name="group1"
-							checked={status.toLowerCase() === "present"}
-						/>
-						<Form.Check
-							inline
-							label={<Badge bg="danger">Empty</Badge>}
-							name="group1"
-							checked={status.toLowerCase() === "error"}
-						/>
-					</Form>
-				)}
+			<td>{quantity}</td>
+			<td>{unit}</td>
+			<td style={{ textAlign: "center" }}>
+				<PencilSquare size={18} />
 			</td>
-			<td>
-				{!edit ? (
-					quantity
-				) : (
-					<Form.Control type="number" defaultValue={quantity} />
-				)}
-			</td>
-			<td>
-				{" "}
-				{!edit ? (
-					unit
-				) : (
-					<Form.Control type="text" defaultValue={unit} />
-				)}
-			</td>
-			<td>
-				<PencilSquare
-					onClick={() => setEdit(!edit)}
-					size={18}
-					style={{ margin: "0 .5rem" }}
-				/>
-				<Trash size={18} style={{ margin: " 0 .5rem" }} />
+			<td style={{ textAlign: "center", color: "var(--bs-danger)" }}>
+				<Trash size={18} onClick={() => handleDelete(id)} />
 			</td>
 		</tr>
+	);
+}
+
+function ShowAddModal(props) {
+	const [rows, setRows] = useState([]);
+	const [name, setName] = useState("");
+	const [quantity, setQuantity] = useState(0);
+	const [unit, setUnit] = useState("");
+
+	const handleSave = () => {
+		console.log("Attempt to save");
+
+		axios
+			.post(
+				`http://192.168.1.19:3001/inventory`,
+				{ inventoryItems: rows },
+				{ withCredentials: true }
+			)
+			.then(response => {
+				setRows([]);
+				setName("");
+				setQuantity(0);
+				setUnit("");
+			})
+			.catch(err => console.log(err));
+	};
+
+	const handleAdd = () => {
+		const obj = {
+			inventory: { name, quantity, unit },
+			status: "full",
+		};
+
+		setRows(prev => [...prev, obj]);
+	};
+
+	return (
+		<Modal
+			{...props}
+			size="lg"
+			aria-labelledby="contained-modal-title-vcenter"
+			centered>
+			<Modal.Header closeButton>
+				<Modal.Title id="contained-modal-title-vcenter">
+					Add a new item to your inventory
+				</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<Form>
+					<Row style={{ paddingBottom: "20px" }}>
+						<Form.Group as={Col} xs={6}>
+							<Form.Control
+								type="text"
+								placeholder="Name"
+								onChange={e => setName(e.target.value)}
+								required
+							/>
+
+							<Form.Text className="text-muted mx-1">
+								Be specific, eg: Brown Sugar | White Sugar vs
+								Sugar
+							</Form.Text>
+						</Form.Group>
+						<Form.Group as={Col}>
+							<Form.Control
+								type="number"
+								placeholder="Quantity"
+								onChange={e => setQuantity(e.target.value)}
+								required
+							/>
+							<Form.Text className="text-muted mx-1">
+								Exclude units, eg: 1, 2.5
+							</Form.Text>
+						</Form.Group>
+
+						<Form.Group as={Col}>
+							<Form.Control
+								type="text"
+								placeholder="Units"
+								onChange={e => setUnit(e.target.value)}
+								required
+							/>
+							<Form.Text className="text-muted mx-1">
+								eg: cups, tbsp, mg, lbs
+							</Form.Text>
+						</Form.Group>
+
+						<Form.Group as={Col} xs={1}>
+							<Button variant="primary">
+								<Plus size="24" onClick={() => handleAdd()} />
+							</Button>
+						</Form.Group>
+					</Row>
+					{rows.map((row, index) => (
+						<p key={index}>
+							<Button variant="primary" style={{ padding: "0" }}>
+								<Dash size="18" />
+							</Button>{" "}
+							{row.quantity} {row.unit} of {row.name}
+						</p>
+					))}
+				</Form>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button variant="primary" onClick={() => handleSave()}>
+					Add Item{rows.length !== 1 ? "s" : ""}
+				</Button>
+				<Button variant="danger" onClick={props.onHide}>
+					Close
+				</Button>
+			</Modal.Footer>
+		</Modal>
 	);
 }
