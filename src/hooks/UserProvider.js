@@ -1,11 +1,11 @@
 /** @format */
 
-import { createContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import { createContext, useEffect, useState } from "react";
+import axios from "axios";
 
 const context = createContext({
 	user: null,
-	setUser: (user) => {},
+	setUser: user => {},
 });
 
 export default function UserProvider({ children }) {
@@ -13,9 +13,9 @@ export default function UserProvider({ children }) {
 
 	useEffect(() => {
 		axios
-			.get('http://localhost:3001/user', { withCredentials: true })
-			.then((response) => setUser(response.data))
-			.catch((err) => console.log(err));
+			.get("http://192.168.1.19:3001/user", { withCredentials: true })
+			.then(response => setUser(response.data))
+			.catch(err => console.log(err));
 	}, []);
 
 	return (
