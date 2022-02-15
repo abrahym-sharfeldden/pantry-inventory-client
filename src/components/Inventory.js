@@ -150,6 +150,8 @@ function ShowRows({ inventory, status, inventoryUpdater }) {
 			.catch(err => console.log(err));
 	};
 
+	const handleEdit = inventoryItem => {};
+
 	// Refactor this code and styling of the edit
 	return (
 		<tr
@@ -163,7 +165,10 @@ function ShowRows({ inventory, status, inventoryUpdater }) {
 			<td>{quantity}</td>
 			<td>{unit}</td>
 			<td style={{ textAlign: "center" }}>
-				<PencilSquare size={18} />
+				<PencilSquare
+					size={18}
+					onClick={() => handleEdit({ inventory, status })}
+				/>
 			</td>
 			<td style={{ textAlign: "center", color: "var(--bs-danger)" }}>
 				<Trash size={18} onClick={() => handleDelete(id)} />
@@ -171,6 +176,8 @@ function ShowRows({ inventory, status, inventoryUpdater }) {
 		</tr>
 	);
 }
+
+function ShowEditModal(props) {}
 
 function ShowAddModal(props) {
 	const [rows, setRows] = useState([]);
