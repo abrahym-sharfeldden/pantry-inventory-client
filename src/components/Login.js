@@ -16,12 +16,13 @@ export default function Login() {
 		e.preventDefault();
 		await axios
 			.post(
-				`http://192.168.1.19:3001/login`,
+				`https://pantry-api.abrahym.dev/login`,
 				{ email, password },
 				{ withCredentials: true }
 			)
 			.then(response => {
-				window.location = "/";
+				console.log(response);
+				//window.location = "/";
 			})
 			.catch(err => {
 				if (err.response.status === 401)

@@ -13,7 +13,7 @@ export default function UserProvider({ children }) {
 
 	useEffect(() => {
 		axios
-			.get("http://192.168.1.19:3001/user", { withCredentials: true })
+			.get("https://pantry-api.abrahym.dev/user", { withCredentials: true })
 			.then(response => setUser(response.data))
 			.catch(err => console.log(err));
 	}, []);
