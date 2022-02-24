@@ -21,8 +21,8 @@ export default function Login() {
 				{ withCredentials: true }
 			)
 			.then(response => {
-				console.log(response);
-				//window.location = "/";
+			
+				window.location = "/";
 			})
 			.catch(err => {
 				if (err.response.status === 401)

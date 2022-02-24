@@ -19,13 +19,13 @@
 		"//": "See https://github.com/facebook/create-react-app/issues/11773",
 		"react-error-overlay": "6.0.9"
 	},
+	"proxy": "https://pantry.abrahym.dev",
 	"scripts": {
 		"start": "NODE_ENV=development react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject"
 	},
-	"proxy": "https://localhost:3001",
 	"browserslist": {
 		"production": [
 			">0.2%",
