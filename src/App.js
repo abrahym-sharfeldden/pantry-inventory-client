@@ -12,10 +12,10 @@ function App() {
 				<UserProvider>
 					<Header />
 					<Routes>
+						<Route path="/" element={<p>404</p>} />
 						<Route exact path="/" element={<Inventory />} />
 						<Route exact path="/login" element={<Login />} />
 						<Route exact path="/register" element={<Register />} />
-						<Route path="/" element={<p>404</p>} />
 					</Routes>
 				</UserProvider>
 			</Container>
