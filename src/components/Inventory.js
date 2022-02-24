@@ -37,7 +37,7 @@ export default function Inventory() {
 	useEffect(() => {
 		if (!user) return;
 		axios
-			.get("http://192.168.1.19:3001/inventory", {
+			.get("https://pantry-api.abrahym.dev/inventory", {
 				withCredentials: true,
 			})
 			.then(response => {
@@ -136,7 +136,7 @@ function ShowRows({ inventory, status, inventoryUpdater }) {
 
 	const handleDelete = id => {
 		axios
-			.delete(`http://192.168.1.19:3001/inventory/${id}`, {
+			.delete(`https://pantry-api.abrahym.dev/inventory/${id}`, {
 				withCredentials: true,
 			})
 			.then(response => {
@@ -190,7 +190,7 @@ function ShowAddModal(props) {
 
 		axios
 			.post(
-				`http://192.168.1.19:3001/inventory`,
+				`https://pantry-api.abrahym.dev/inventory`,
 				{ inventoryItems: rows },
 				{ withCredentials: true }
 			)

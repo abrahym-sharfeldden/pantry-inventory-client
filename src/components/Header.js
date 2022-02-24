@@ -16,7 +16,7 @@ export default function Header() {
 	const handleLogOut = async () => {
 		await axios
 			.post(
-				"http://192.168.1.19:3001/logout",
+				"https://pantry-api.abrahym.dev/logout",
 				{},
 				{ withCredentials: true }
 			)

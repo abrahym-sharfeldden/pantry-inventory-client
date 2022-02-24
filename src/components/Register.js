@@ -15,7 +15,7 @@ export default function Register({ user }) {
 
 		await axios
 			.post(
-				"http://192.168.1.19:3001/register",
+				"https://pantry-api.abrahym.dev/register",
 				{ email, password },
 				{ withCredentials: true }
 			)
