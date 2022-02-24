@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+    - "12.16"
+addons:
+    ssh_known_hosts: 161.35.11.166
+before_install:
+    - cd client
+install:
+    - npm ci 
+script:
+    - "true"
+after_success:
+    - npm run build
+    - cd ..
+    - bash ./deploy.sh
