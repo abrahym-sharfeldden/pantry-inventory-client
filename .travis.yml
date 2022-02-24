@@ -16,4 +16,4 @@ script:
 after_success:
     - npm run build
     - cd ..
-    - bash ./bin/deploy.sh
+    - bash ./deploy.sh
