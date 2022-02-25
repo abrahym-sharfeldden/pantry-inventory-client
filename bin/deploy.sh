@@ -1,6 +1,7 @@
 set -xe
 
 if [ $TRAVIS_BRANCH == 'master' ] ; then
+  eval "$(ssh-agent -s)"
   ssh-add ~/.ssh/id_rsa
 
   rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress build/* travis@abrahym.dev:$HOST_STATIC_PATH
