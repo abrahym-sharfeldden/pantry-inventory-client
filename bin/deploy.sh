@@ -3,7 +3,7 @@ set -xe
 if [ $TRAVIS_BRANCH == 'master' ] ; then
   # before_deploy
   mkdir -p ${TRAVIS_HOME}/.ssh
-  ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $HOST_IP 2>&1 | tee -a ${TRAVIS_HOME}/.ssh/known_hosts
+  ssh-keyscan -t ${TRAVIS_SSH_KEY_TYPES} -H ${HOST_IP} 2>&1 | tee -a ${TRAVIS_HOME}/.ssh/known_hosts
   ssh-add ~/.ssh/id_rsa
 
   # deploy
