@@ -1,17 +1,20 @@
 language: node_js
 node_js:
-    - "12.16"
+- '12.16'
 addons:
-    ssh_known_hosts: abrahym.dev
+  ssh_known_hosts: abrahym.dev
 before_install:
-    - openssl aes-256-cbc -K $encrypted_0ddd2445e49f_key -iv $encrypted_0ddd2445e49f_iv
-      -in travis_rsa.enc -out travis_rsa -d
-    - chmod 600 travis_rsa
-    - mv travis_rsa ~/.ssh/id_rsa
+- openssl aes-256-cbc -K $encrypted_0ddd2445e49f_key -iv $encrypted_0ddd2445e49f_iv
+  -in travis_rsa.enc -out travis_rsa -d
+- chmod 600 travis_rsa
+- mv travis_rsa ~/.ssh/id_rsa
 install:
-    - npm ci
+- npm ci
 script:
-    - "true"
+- 'true'
 after_success:
-    - npm run build
-    - bash ./bin/deploy.sh
+- npm run build
+- bash ./bin/deploy.sh
+env:
+  global:
+    secure: n5472EztiIPj3zu7B7XY7v/we/OzGUgjo6mrMCBE/DpAnUm7mQJ2GURjqc0kK5SQ+Af93TMxyO4jK1XrIwRPn+U0yvxX6TTtxFLLglCvN6CW7/rfGarggAWr1e97Elb3OjO4RADqcjWo60s2vIjNowhZNXA29+9vC1Kl2joHONfyy142LiR/5rRTg31lRtFifsggQXUSRR7PmZjGBnt8lMkg3YipJO+aqjiR+uLBqo9p/stRSO45z1spUmwLV5fgTob66lehJVgfyAdYVOuEpA1JqWlu8VTxkE/aB1beCzPp3a8i6vLo/QSZAZOiYNpBdnoNL3+kxteZ4AVgUMXQsxN15XVquIkdV7n2WwquOJXaURf9hp29+2bHWVyOzZaDNeNFUqF6o8xd/59tu+/8mAiFBc3ea1rAvEwTbCLEK2NwHTFxsV2sDIENB6300FyQjiv2XQEXWYI/fuwPupsZgg6hT7/lG68XUYdm05Uh+9ERocJV915P9BYvgzXFImGT4TJrV8uTLhBwSPQImh6nSvDnBKLSfq1NYDIx43RWO3knGkqWr6cwHziw4+rdMu00s1Mi+8YILpurXEc+TCjYzu7Fe8xUnxh5Xvbzu4yEkGL7BQYrWXIBtg0XvMZS/dsdm2NiuQqRSbxpu9atuKCGM1Nqst6iM775FMvnNSBeoRY=
