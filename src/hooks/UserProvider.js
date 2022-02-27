@@ -13,7 +13,9 @@ export default function UserProvider({ children }) {
 
 	useEffect(() => {
 		axios
-			.get("https://pantry-api.abrahym.dev/user", { withCredentials: true })
+			.get(`${process.env.REACT_APP_API_URI}/user`, {
+				withCredentials: true,
+			})
 			.then(response => setUser(response.data))
 			.catch(err => console.log(err));
 	}, []);

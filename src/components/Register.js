@@ -15,7 +15,7 @@ export default function Register({ user }) {
 
 		await axios
 			.post(
-				"https://pantry-api.abrahym.dev/register",
+				`${process.env.REACT_APP_API_URI}/register`,
 				{ email, password },
 				{ withCredentials: true }
 			)

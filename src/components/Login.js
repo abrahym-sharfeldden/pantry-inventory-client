@@ -14,14 +14,14 @@ export default function Login() {
 
 	const handleSubmit = async e => {
 		e.preventDefault();
+		console.log(process.env);
 		await axios
 			.post(
-				`https://pantry-api.abrahym.dev/login`,
+				`${process.env.REACT_APP_API_URI}/login`,
 				{ email, password },
 				{ withCredentials: true }
 			)
 			.then(response => {
-			
 				window.location = "/";
 			})
 			.catch(err => {

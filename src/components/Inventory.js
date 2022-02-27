@@ -37,7 +37,7 @@ export default function Inventory() {
 	useEffect(() => {
 		if (!user) return;
 		axios
-			.get("https://pantry-api.abrahym.dev/inventory", {
+			.get(`${process.env.REACT_APP_API_URI}/inventory`, {
 				withCredentials: true,
 			})
 			.then(response => {
@@ -136,7 +136,7 @@ function ShowRows({ inventory, status, inventoryUpdater }) {
 
 	const handleDelete = id => {
 		axios
-			.delete(`https://pantry-api.abrahym.dev/inventory/${id}`, {
+			.delete(`${process.env.REACT_APP_API_URI}/inventory/${id}`, {
 				withCredentials: true,
 			})
 			.then(response => {
@@ -190,7 +190,7 @@ function ShowAddModal(props) {
 
 		axios
 			.post(
-				`https://pantry-api.abrahym.dev/inventory`,
+				`${process.env.REACT_APP_API_URI}/inventory`,
 				{ inventoryItems: rows },
 				{ withCredentials: true }
 			)

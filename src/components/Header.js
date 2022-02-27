@@ -16,7 +16,7 @@ export default function Header() {
 	const handleLogOut = async () => {
 		await axios
 			.post(
-				"https://pantry-api.abrahym.dev/logout",
+				`${process.env.REACT_APP_API_URI}/logout`,
 				{},
 				{ withCredentials: true }
 			)
