@@ -1,2 +1,3 @@
-# Getting Started
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Pantry App - Client
+
+[![Build Status](https://app.travis-ci.com/abrahym-sharfeldden/pantry-inventory-client.svg?branch=master)](https://app.travis-ci.com/abrahym-sharfeldden/pantry-inventory-client)
