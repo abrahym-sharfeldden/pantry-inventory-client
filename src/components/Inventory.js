@@ -17,6 +17,7 @@ export default function Inventory() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [inventoryItems, setInventoryItems] = useState([]);
 	const [show, setShow] = useState(false);
+	const [itemNames, setItemNames] = useState([]);
 
 	const handleShowModal = () => setShow(true);
 	const handleCloseModal = () => setShow(false);
@@ -29,7 +30,11 @@ export default function Inventory() {
 			})
 			.then(response => {
 				const inventoryList = response.data.inventoryItems;
-
+				setItemNames(() =>
+					inventoryList.map(({ inventory }) =>
+						inventory.name.toLowerCase()
+					)
+				);
 				setInventory(inventoryList);
 
 				return () => {
@@ -57,11 +62,11 @@ export default function Inventory() {
 					.toLowerCase()
 					.includes(searchTerm.toLowerCase())
 			)
-			.map((inventory, key) => (
+			.map(({ inventory, status }, key) => (
 				<ShowRows
 					key={key}
-					inventory={inventory.inventory}
-					status={inventory.status}
+					inventory={inventory}
+					status={status}
 					inventoryUpdater={setInventory}
 				/>
 			));
@@ -74,7 +79,7 @@ export default function Inventory() {
 					className="d-flex justify-content-between align-items-center"
 					style={{ paddingInline: 0, height: "50px" }}>
 					<input
-						type="text"
+						type="search"
 						placeholder="Search.."
 						onChange={e => setSearchTerm(e.target.value)}
 					/>
@@ -99,7 +104,12 @@ export default function Inventory() {
 					<tbody>{displayInventory()}</tbody>
 				</Table>
 
-				<AddModal show={show} onHide={() => handleCloseModal(false)} />
+				<AddModal
+					show={show}
+					onHide={() => handleCloseModal(false)}
+					inventoryUpdater={setInventory}
+					items={itemNames}
+				/>
 			</Container>
 		);
 	};

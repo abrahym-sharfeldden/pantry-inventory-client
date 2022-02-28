@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { Badge } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 
@@ -5,13 +7,12 @@ export default function ShowRows({ inventory, status, inventoryUpdater }) {
 	const { id, name, quantity, unit } = inventory;
 	const badgeBg = status.toLowerCase() === "error" ? "danger" : "success";
 
-	const handleDelete = id => {
-		axios
+	const handleDelete = async id => {
+		await axios
 			.delete(`${process.env.REACT_APP_API_URI}/inventory/${id}`, {
 				withCredentials: true,
 			})
 			.then(response => {
-				console.log(response);
 				inventoryUpdater(previousState =>
 					previousState.filter(
 						element => !(element.inventory.id === id)
