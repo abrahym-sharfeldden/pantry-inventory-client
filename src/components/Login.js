@@ -23,7 +23,6 @@ export default function Login() {
 	const handleSubmit = async e => {
 		const form = e.currentTarget;
 		e.preventDefault();
-<<<<<<< Updated upstream
 		e.stopPropagation();
 
 		setValidated(true);
@@ -33,8 +32,6 @@ export default function Login() {
 		}
 
 		setLoading(true);
-=======
->>>>>>> Stashed changes
 		await axios
 			.post(
 				`${process.env.REACT_APP_API_URI}/login`,
