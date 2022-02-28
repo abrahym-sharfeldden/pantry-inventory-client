@@ -2,23 +2,10 @@
 
 import { useState, useEffect, useContext } from "react";
 import { Navigate } from "react-router-dom";
-import {
-	Container,
-	Table,
-	Badge,
-	Form,
-	Modal,
-	Button,
-	Row,
-	Col,
-} from "react-bootstrap";
-import {
-	PlusCircleFill,
-	Plus,
-	Dash,
-	Trash,
-	PencilSquare,
-} from "react-bootstrap-icons";
+import { Container, Table } from "react-bootstrap";
+import { PlusCircleFill } from "react-bootstrap-icons";
+
+import { AddModal, EditModal, ShowRows } from "./InventoryHelperComponents";
 import UserProvider from "../hooks/UserProvider";
 import axios from "axios";
 
@@ -112,10 +99,7 @@ export default function Inventory() {
 					<tbody>{displayInventory()}</tbody>
 				</Table>
 
-				<ShowAddModal
-					show={show}
-					onHide={() => handleCloseModal(false)}
-				/>
+				<AddModal show={show} onHide={() => handleCloseModal(false)} />
 			</Container>
 		);
 	};
@@ -128,165 +112,4 @@ export default function Inventory() {
 	};
 
 	return render();
-}
-
-function ShowRows({ inventory, status, inventoryUpdater }) {
-	const { id, name, quantity, unit } = inventory;
-	const badgeBg = status.toLowerCase() === "error" ? "danger" : "success";
-
-	const handleDelete = id => {
-		axios
-			.delete(`${process.env.REACT_APP_API_URI}/inventory/${id}`, {
-				withCredentials: true,
-			})
-			.then(response => {
-				console.log(response);
-				inventoryUpdater(previousState =>
-					previousState.filter(
-						element => !(element.inventory.id === id)
-					)
-				);
-			})
-			.catch(err => console.log(err));
-	};
-
-	const handleEdit = inventoryItem => {};
-
-	// Refactor this code and styling of the edit
-	return (
-		<tr
-			style={{
-				borderBlock: "10px solid var(--bs-body-bg)",
-			}}>
-			<td>{name}</td>
-			<td>
-				<Badge bg={badgeBg}>{status}</Badge>
-			</td>
-			<td>{quantity}</td>
-			<td>{unit}</td>
-			<td style={{ textAlign: "center" }}>
-				<PencilSquare
-					size={18}
-					onClick={() => handleEdit({ inventory, status })}
-				/>
-			</td>
-			<td style={{ textAlign: "center", color: "var(--bs-danger)" }}>
-				<Trash size={18} onClick={() => handleDelete(id)} />
-			</td>
-		</tr>
-	);
-}
-
-function ShowEditModal(props) {}
-
-function ShowAddModal(props) {
-	const [rows, setRows] = useState([]);
-	const [name, setName] = useState("");
-	const [quantity, setQuantity] = useState(0);
-	const [unit, setUnit] = useState("");
-
-	const handleSave = () => {
-		console.log("Attempt to save");
-
-		axios
-			.post(
-				`${process.env.REACT_APP_API_URI}/inventory`,
-				{ inventoryItems: rows },
-				{ withCredentials: true }
-			)
-			.then(response => {
-				setRows([]);
-				setName("");
-				setQuantity(0);
-				setUnit("");
-			})
-			.catch(err => console.log(err));
-	};
-
-	const handleAdd = () => {
-		const obj = {
-			inventory: { name, quantity, unit },
-			status: "full",
-		};
-
-		setRows(prev => [...prev, obj]);
-	};
-
-	return (
-		<Modal
-			{...props}
-			size="lg"
-			aria-labelledby="contained-modal-title-vcenter"
-			centered>
-			<Modal.Header closeButton>
-				<Modal.Title id="contained-modal-title-vcenter">
-					Add a new item to your inventory
-				</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				<Form>
-					<Row style={{ paddingBottom: "20px" }}>
-						<Form.Group as={Col} xs={6}>
-							<Form.Control
-								type="text"
-								placeholder="Name"
-								onChange={e => setName(e.target.value)}
-								required
-							/>
-
-							<Form.Text className="text-muted mx-1">
-								Be specific, eg: Brown Sugar | White Sugar vs
-								Sugar
-							</Form.Text>
-						</Form.Group>
-						<Form.Group as={Col}>
-							<Form.Control
-								type="number"
-								placeholder="Quantity"
-								onChange={e => setQuantity(e.target.value)}
-								required
-							/>
-							<Form.Text className="text-muted mx-1">
-								Exclude units, eg: 1, 2.5
-							</Form.Text>
-						</Form.Group>
-
-						<Form.Group as={Col}>
-							<Form.Control
-								type="text"
-								placeholder="Units"
-								onChange={e => setUnit(e.target.value)}
-								required
-							/>
-							<Form.Text className="text-muted mx-1">
-								eg: cups, tbsp, mg, lbs
-							</Form.Text>
-						</Form.Group>
-
-						<Form.Group as={Col} xs={1}>
-							<Button variant="primary">
-								<Plus size="24" onClick={() => handleAdd()} />
-							</Button>
-						</Form.Group>
-					</Row>
-					{rows.map((row, index) => (
-						<p key={index}>
-							<Button variant="primary" style={{ padding: "0" }}>
-								<Dash size="18" />
-							</Button>{" "}
-							{row.quantity} {row.unit} of {row.name}
-						</p>
-					))}
-				</Form>
-			</Modal.Body>
-			<Modal.Footer>
-				<Button variant="primary" onClick={() => handleSave()}>
-					Add Item{rows.length !== 1 ? "s" : ""}
-				</Button>
-				<Button variant="danger" onClick={props.onHide}>
-					Close
-				</Button>
-			</Modal.Footer>
-		</Modal>
-	);
 }

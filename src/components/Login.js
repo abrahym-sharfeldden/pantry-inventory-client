@@ -22,12 +22,10 @@ export default function Login() {
 
 	const handleSubmit = async e => {
 		const form = e.currentTarget;
-		// if (!form.checkValidity()) {
 		e.preventDefault();
 		e.stopPropagation();
-		// }
+
 		setValidated(true);
-		console.log(process.env);
 
 		if (!form.checkValidity()) {
 			return;
