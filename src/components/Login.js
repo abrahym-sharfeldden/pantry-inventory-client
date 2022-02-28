@@ -11,10 +11,29 @@ export default function Login() {
 	const { user } = userData.user || {};
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [loading, setLoading] = useState(undefined);
+	const [completed, setCompleted] = useState(undefined);
+	const [validated, setValidated] = useState(false);
+	const [loginFailure, setLoginFailure] = useState(false);
+
+	const revertButton = () => {
+		setTimeout(() => setLoginFailure(false), 500);
+	};
 
 	const handleSubmit = async e => {
+		const form = e.currentTarget;
+		// if (!form.checkValidity()) {
 		e.preventDefault();
+		e.stopPropagation();
+		// }
+		setValidated(true);
 		console.log(process.env);
+
+		if (!form.checkValidity()) {
+			return;
+		}
+
+		setLoading(true);
 		await axios
 			.post(
 				`${process.env.REACT_APP_API_URI}/login`,
@@ -22,12 +41,24 @@ export default function Login() {
 				{ withCredentials: true }
 			)
 			.then(response => {
-				window.location = "/";
+				console.log(response);
+				if (response.status === 200) {
+					setLoading(false);
+					setCompleted(true);
+					setTimeout(() => {
+						window.location = "/";
+					}, 500);
+				}
 			})
 			.catch(err => {
-				if (err.response.status === 401)
-					console.log("Page didn't redirect - unauthorized");
-				console.error(err);
+				setLoginFailure(true);
+				setLoading(false);
+				if (err.response.status === 401) {
+					console.log("Incorrect email and/or password");
+				} else if (err.response.status === 400) {
+					console.log("Please enter an email and/or password");
+					// console.log(err);
+				}
 			});
 	};
 	return user ? (
@@ -38,6 +69,8 @@ export default function Login() {
 			className="d-flex flex-wrap flex-column align-items-center justify-content-center"
 			fluid="xl">
 			<Form
+				noValidate
+				validated={validated}
 				onSubmit={handleSubmit}
 				className="d-flex flex-wrap flex-column justify-content-center"
 				style={{
@@ -50,14 +83,18 @@ export default function Login() {
 				<Form.Group className="mb-3" controlId="formBasicEmail">
 					<Form.Label>Email address</Form.Label>
 					<Form.Control
-						type="text"
+						required
+						type="email"
 						placeholder="Enter email"
 						onChange={e => setEmail(e.target.value)}
 					/>
+					<Form.Control.Feedback type="invalid">
+						Please enter an email
+					</Form.Control.Feedback>
 					<Form.Text className="text-muted">
 						Demo login:{" "}
 						<b>
-							<i>demo | pw123</i>
+							<i>demo@email.com | pw123</i>
 						</b>
 					</Form.Text>
 				</Form.Group>
@@ -65,10 +102,14 @@ export default function Login() {
 				<Form.Group className="mb-3" controlId="formBasicPassword">
 					<Form.Label>Password</Form.Label>
 					<Form.Control
+						required
 						type="password"
 						placeholder="Password"
 						onChange={e => setPassword(e.target.value)}
 					/>
+					<Form.Control.Feedback type="invalid">
+						Please enter a password
+					</Form.Control.Feedback>
 					<Form.Text className="text-muted">
 						Don't have an account?{" "}
 						<span className="text-decoration-underlined">
@@ -79,9 +120,43 @@ export default function Login() {
 				<Form.Group
 					className="mb-4"
 					controlId="formBasicCheckbox"></Form.Group>
-				<Button variant="primary" type="submit">
-					Submit
-				</Button>
+				{!completed ? (
+					<>
+						{!loading ? (
+							<>
+								{!loginFailure ? (
+									<Button variant="primary" type="submit">
+										Submit
+									</Button>
+								) : (
+									<>
+										<Button variant="danger" type="submit">
+											<span className="failed">
+												&#x2716;
+											</span>
+											<span>Login failed</span>
+										</Button>
+										{revertButton()}
+									</>
+								)}
+							</>
+						) : (
+							<Button variant="primary">
+								<div className="spinner">
+									<span className="half-spinner"></span>
+									<span>Loading...</span>
+								</div>
+							</Button>
+						)}
+					</>
+				) : (
+					<Button variant="success">
+						<div className="spinner">
+							<span className="completed">&#x2713;</span>
+							<span>Completed...</span>
+						</div>
+					</Button>
+				)}
 			</Form>
 		</Container>
 	);
