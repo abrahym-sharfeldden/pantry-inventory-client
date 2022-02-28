@@ -5,12 +5,9 @@ import { Navigate } from "react-router-dom";
 import { Container, Table } from "react-bootstrap";
 import { PlusCircleFill } from "react-bootstrap-icons";
 
-import { AddModal, EditModal, ShowRows } from "./InventoryHelperComponents";
+import { AddModal, ShowRows } from "./InventoryHelperComponents";
 import UserProvider from "../hooks/UserProvider";
 import axios from "axios";
-
-// import data from './dummy.json';
-// import data from './MOCK_DATA.json';
 
 export default function Inventory() {
 	const { user } = useContext(UserProvider.context).user || {};
@@ -74,8 +71,10 @@ export default function Inventory() {
 
 	const showInventoryTable = () => {
 		return (
-			<Container fluid="lg" style={{ marginTop: "5rem" }}>
+			<Container fluid="sm" style={{ marginTop: "5rem" }}>
+				<h1>Inventory List</h1>
 				<Container
+					fluid="sm"
 					className="d-flex justify-content-between align-items-center"
 					style={{ paddingInline: 0, height: "50px" }}>
 					<input
@@ -97,8 +96,8 @@ export default function Inventory() {
 							<th>Status</th>
 							<th>Amount</th>
 							<th>Units</th>
-							<th></th>
-							<th></th>
+							<th>Edit</th>
+							<th>Delete</th>
 						</tr>
 					</thead>
 					<tbody>{displayInventory()}</tbody>

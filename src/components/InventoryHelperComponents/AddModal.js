@@ -38,10 +38,7 @@ export default function AddModal({ show, onHide, inventoryUpdater, items }) {
 					});
 					return [...previousState, ...arr];
 				});
-				setRows([]);
-				setName(null);
-				setQuantity(null);
-				setUnit("");
+				onHide();
 			})
 			.catch(err => console.log(err));
 	};
@@ -77,6 +74,7 @@ export default function AddModal({ show, onHide, inventoryUpdater, items }) {
 		<Modal
 			show={show}
 			onHide={onHide}
+			backdrop="static"
 			size="lg"
 			aria-labelledby="contained-modal-title-vcenter"
 			centered>
@@ -111,6 +109,7 @@ export default function AddModal({ show, onHide, inventoryUpdater, items }) {
 								type="number"
 								placeholder="Quantity"
 								min={1}
+								step={0.05}
 								onChange={e => setQuantity(e.target.value)}
 								required
 							/>

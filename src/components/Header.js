@@ -61,7 +61,7 @@ export default function Header() {
 			<Navbar bg="dark" variant="dark" expand="lg">
 				<Container className="header-container-width" fluid="md">
 					<Navbar.Brand as={Link} to="/">
-						Pantry Inventory
+						Pantry App
 					</Navbar.Brand>
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
 					<Navbar.Collapse id="basic-navbar-nav">
@@ -70,17 +70,29 @@ export default function Header() {
 							style={{ width: "100%" }}
 							activeKey={active}
 							onSelect={selected => setActive(selected)}>
-							<Nav.Link eventKey="home">Home</Nav.Link>
-							<NavDropdown
-								title="Settings"
-								id="basic-nav-dropdown">
-								{isLoggedIn()}
-
-								<NavDropdown.Divider />
-								<NavDropdown.Item href="#action/3.4">
-									Settings
-								</NavDropdown.Item>
-							</NavDropdown>
+							<Nav.Link as={Link} to="/">
+								Home
+							</Nav.Link>
+							{!user ? (
+								<>
+									<Nav.Link as={Link} to="/login">
+										Log In
+									</Nav.Link>
+									<Nav.Link as={Link} to="/register">
+										Register
+									</Nav.Link>
+								</>
+							) : (
+								<>
+									<Nav.Link
+										as={Link}
+										to="/"
+										className="text-danger"
+										onClick={handleLogOut}>
+										Log Out
+									</Nav.Link>
+								</>
+							)}
 						</Nav>
 					</Navbar.Collapse>
 				</Container>

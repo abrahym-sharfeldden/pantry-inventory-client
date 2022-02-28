@@ -1,30 +1,20 @@
-import axios from "axios";
-
+import { useState } from "react";
 import { Badge } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
+import { EditModal, DeleteModal } from "./";
 
 export default function ShowRows({ inventory, status, inventoryUpdater }) {
+	const [showDelete, setShowDelete] = useState(false);
+	const [showEdit, setShowEdit] = useState(false);
+
 	const { id, name, quantity, unit } = inventory;
 	const badgeBg = status.toLowerCase() === "error" ? "danger" : "success";
 
-	const handleDelete = async id => {
-		await axios
-			.delete(`${process.env.REACT_APP_API_URI}/inventory/${id}`, {
-				withCredentials: true,
-			})
-			.then(response => {
-				inventoryUpdater(previousState =>
-					previousState.filter(
-						element => !(element.inventory.id === id)
-					)
-				);
-			})
-			.catch(err => console.log(err));
-	};
+	const handleShowDeleteModal = () => setShowDelete(true);
+	const handleCloseDeleteModal = () => setShowDelete(false);
+	const handleShowEditModal = () => setShowEdit(true);
+	const handleCloseEditModal = () => setShowEdit(false);
 
-	const handleEdit = inventoryItem => {};
-
-	// Refactor this code and styling of the edit
 	return (
 		<tr
 			style={{
@@ -36,14 +26,27 @@ export default function ShowRows({ inventory, status, inventoryUpdater }) {
 			</td>
 			<td>{quantity}</td>
 			<td>{unit}</td>
-			<td style={{ textAlign: "center" }}>
-				<PencilSquare
-					size={18}
-					onClick={() => handleEdit({ inventory, status })}
+			<td>
+				<PencilSquare size={18} onClick={() => handleShowEditModal()} />
+
+				<EditModal
+					show={showEdit}
+					onHide={() => handleCloseEditModal()}
+					inventoryUpdater={inventoryUpdater}
+					item={inventory}
+					onClick={() => handleShowEditModal()}
 				/>
 			</td>
-			<td style={{ textAlign: "center", color: "var(--bs-danger)" }}>
-				<Trash size={18} onClick={() => handleDelete(id)} />
+			<td style={{ color: "var(--bs-danger)" }}>
+				<Trash size={18} onClick={handleShowDeleteModal} />
+
+				<DeleteModal
+					show={showDelete}
+					onHide={handleCloseDeleteModal}
+					inventoryUpdater={inventoryUpdater}
+					item={inventory}
+					onClick={handleShowDeleteModal}
+				/>
 			</td>
 		</tr>
 	);

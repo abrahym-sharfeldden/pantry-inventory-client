@@ -146,6 +146,10 @@ html,
 	animation: bigger 0.25s linear;
 }
 
+svg:hover {
+	cursor: pointer;
+}
+
 @keyframes bigger {
 	from {
 		transform: scale(0);
